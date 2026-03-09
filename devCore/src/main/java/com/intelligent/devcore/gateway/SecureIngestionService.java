@@ -14,7 +14,7 @@ public class SecureIngestionService {
 
     public SecureIngestionService(StorageProvider storageProvider, Tika tika, List<String> allowedMimeTypes) {
         this.storageProvider = storageProvider;
-        this.tika = tika;
+        this.tika = new org.apache.tika.Tika();
         this.allowedMimeTypes = allowedMimeTypes;
     }
 
