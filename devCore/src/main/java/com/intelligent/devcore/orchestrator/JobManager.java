@@ -35,36 +35,37 @@ public class JobManager {
         // STATERGY THAT MATCH THE FILE type
         // then filter our available AI agents, to only include the ones this strategy required
         WorkflowStrategy activeStrategy = availableStatergies.stream()
-                .filter(s ->s.getTargetType().equals(targetType))
+                .filter(s -> s.getTargetType().equals(targetType))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No strategy found for: " + targetType));
+
+
 
         List<AgentContract> requiredAgents = availableAgents.stream()
                 .filter(a -> activeStrategy.getRequiredAgents().contains(a.getAgentIdentifier()))
                 .collect(Collectors.toList());
 
-        // register new job in thread-safe tracker, locking in extract
+         // register new job in thread-safe tracker, locking in extract
         //number of background agents waiting for
-        jobTracker.createNewJob(jobId,requiredAgents.size());
+        jobTracker.createNewJob(jobId, requiredAgents.size());
 
         // scatter tasks to the background thread pool, also pass a callback function
         // that will only trigger when the very last agent report its score.
-        taskDispatcher.dispatchTasks(jobId, secureFilePath,requiredAgents, ()->{
+        taskDispatcher.dispatchTasks(jobId, secureFilePath, requiredAgents, () -> {
 
             // Fusion Phase -- triggered async
             Map<String, Double> finalScore = jobTracker.getJobResults(jobId);
             double humanPobability = activeStrategy.calculateFusionScore(finalScore);
-            System.out.println("Job" + jobId + " Complete final Score: "+ humanPobability);
+            System.out.println("Job" + jobId + " Complete final Score: " + humanPobability);
 
             jobTracker.cleanupJob(jobId);
         });
-        // return the job id to the user so they can track progress
         return jobId;
 
-
     }
-
 }
+
+
 
 
 

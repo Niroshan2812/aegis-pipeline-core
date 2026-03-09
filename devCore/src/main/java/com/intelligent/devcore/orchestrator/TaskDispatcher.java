@@ -25,6 +25,7 @@ public class TaskDispatcher {
           CompletableFuture.supplyAsync(()->{
               try {
                   return agent.executeAnalysis(secureFilePath);
+
               }catch(Exception e){
                   System.err.println("Agent " + agent.getAgentIdentifier() + "failed "+  e.getMessage());
                   return 0.0;
@@ -39,6 +40,11 @@ public class TaskDispatcher {
                     if(isComplete){
                         onCompleteAction.run();
                     }
+                  })
+                  .exceptionally(ex->{
+                      //System.err.println(" Background thread crashed: " +  ex.getMessage());
+                      ex.printStackTrace();
+                      return null;
                   });
       }
     }
