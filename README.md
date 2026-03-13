@@ -39,5 +39,7 @@ future.thenAccept(result -> System.out.println("AI Confidence Score: " + result.
 4. **Scatter:** Dispatches the payload to the required `AgentContract` workers asynchronously.
 5. **Gather:** Awaits all thread callbacks and fuses the final probability score.
 
+![AegisPipeline Architecture](./devCore/src/Art.drawio.png)
+
 ## 🛠️ Testing
 The core engine is fully unit-tested using JUnit and Mock agents to verify asynchronous routing and thread safety without requiring heavy ML models to be loaded locally.
